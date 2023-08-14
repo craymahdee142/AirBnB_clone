@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 """Defines Hbnb command line interpreter"""
 import cmd
-import shlex
+from shlex import split
 import models
+import re
 from models import storage
 from datetime import datetime
 from models.base_model import BaseModel
@@ -12,6 +13,24 @@ from models.state import State
 from models.place import Place
 from models.review import Review
 from models.amenity import Amenity
+
+
+def parse(arg):
+    curly_braces = re.search(r"\{(.*?)\}", arg)
+    brackets = re.search(r"\[(.*?)\]", arg)
+    if curly_braces is None:
+        if brackets is None:
+            return [i.strip(",") for i in split(arg)]
+        else:
+            lexer = split(arg[:brackets.span()[0]])
+            ret_list = [i.strip(",") for i in lexer]
+            ret_list.append(brackets.group())
+            return retl
+    else:
+        lexer = split(arg[:curly_braces.span()[0]])
+        ret_list = [i.strip(",") for i in lexer]
+        ret_list.append(curly_braces.group())
+        return ret_list
 
 
 class HBNBCommand(cmd.Cmd):
@@ -37,7 +56,24 @@ class HBNBCommand(cmd.Cmd):
 
     def default(self, line):
         """Default behavior for cmd module when input is invalid"""
+        arg_dict = {
+            "all": self.do_all,
+            "show": self.do_show,
+            "destroy": self.do_destroy,
+            "count": self.do_count,
+            "update": self.do_update
+        }
+        match = re.search(r"\.", line)
+        if match is not None:
+            arg = [line[:match.span()[0]], line[match.span()[1]:]]
+            match = re.search(r"\((.*?)\)", arg[1])
+            if match is not None:
+                command = [arg[1][match.span()[0]], match.group()[1:-1]]
+                if command[0] in arg_dict.keys():
+                    call = "{} {}".format(arg[0], command[1])
+                    return arg_dict[command[0]](call)
         print("*** Unknown syntax: {}".format(line))
+        return False
 
     def do_quit(self, line):
         """Quit command to exit the program"""
@@ -144,44 +180,30 @@ class HBNBCommand(cmd.Cmd):
             elif len(update_arg) == 2:
                 print("** attribute name missing **")
             elif len(update_arg) == 3:
+               #    try:
+               #    type(eval(update_arg[2])) != dict
+               #    except NameError:"""
                 print("** value missing **")
             else:
                 key_find = class_name + '.' + update_arg[1]
                 obj = objects.get(key_find, None)
-
                 if not obj:
                     print("** no instance found **")
-                    return
 
                 setattr(obj, update_arg[2], update_arg[3].strip('"'))
                 models.storage.save()
 
-    def check_class_name(self, name=""):
-        """check if stdin user typed class name and id"""
-        if len(name) == 0:
-            print("** class name missing **")
-            return False
-        else:
-            return True
 
-    def check_class_id(self, name=""):
-        """Check lass id"""
-        if len(name.split(" ")) == 1:
-            print("** instance id missing **")
-        else:
-            return True
-
-    def found_class_name(self, name=""):
-        """Find the name of class"""
-        if self.check_class_name(name):
-            args = shlex.split(name)
-            if class_name in self.valid_classes:
-                if self.check_class_name_id(name):
-                    key = args[0] + '.' + args[1]
-                    return key
-                else:
-                    print("** class doesn't exist **")
-                    return None
+    def do_count(self, line):
+        """Retrieve the number of instance of a given class
+        Usage: count <class> or <class.count>()
+        """
+        count_arg = parse(arg)
+        count = 0
+        for obj in storage.all().values():
+            if count_arg[0] == obj.__class__.__name__:
+                count += 1
+        print(count)
 
 
 if __name__ == "__main__":
