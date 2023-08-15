@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 """Defines Hbnb command line interpreter"""
 import cmd
-from shlex import shlex
+from shlex import split
 import models
+import re
 from models import storage
 from datetime import datetime
 from models.base_model import BaseModel
