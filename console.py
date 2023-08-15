@@ -39,7 +39,7 @@ class HBNBCommand(cmd.Cmd):
     Attributes:
         prompt (str): custom command prompt
     """
-    prompt = "(Hbnb) "
+    prompt = "(hbnb) "
     valid_classes = {
             "BaseModel",
             "User",
