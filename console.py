@@ -157,8 +157,7 @@ class HBNBCommand(cmd.Cmd):
             else:
                 new_list = []
                 for obj in storage.all().values():
-                    if len(all_arg) > 0 and class_name ==
-                    obj.__class__.__name__:
+                    if len(all_arg) > 0 and class_name == obj.__class__.__name__:
                         new_list.append(obj.__str__())
                     elif len(all_arg) == 0:
                         new_list.append(obj.__str__())
