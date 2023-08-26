@@ -1,0 +1,19 @@
+/* global style */
+body {
+    margin: 0;
+    padding: 0;
+    color: #484848;
+    font-size: 14px;
+    font-family: Circular,"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+.container {
+    margin: 30px auto;
+    bottom: 30px;
+    max-width: 1000px;
+}
+
+strong {
+    font-weight: bold;
+}
+

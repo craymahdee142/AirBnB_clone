@@ -3,24 +3,32 @@
 }
 
 .places h1 {
-    text-align: left;
-    margin: 15px;
     font-size: 30px;
-    padding-left: 30px;
+    margin-bottom: -10px;
+    margin-top: 10px;
 }
-
-article {
+.places {
+    display: flex;
+    flex-direction: column;
+    padding-left: 30px;
+    border: 0;
+}
+.places article {
     width: 390px;
     margin: 20px;
     padding: 20px;
     border-radius: 4px;
     border: 1px  solid #FF5A5F;
-    display: inline-block;
+    align-items: center;
 }
-h2 {
-    text-align: center;
+.article {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    flex-wrap: wrap;
 }
 
 article h2 {
     font-size: 30px;
+    text-align: center;
 }
